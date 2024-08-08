@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 69192959
+  GlobalObjectIdHash: 3839366670
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -176,6 +176,7 @@ MonoBehaviour:
   inputReader: {fileID: 11400000, guid: 48a58c4f586e03247ac81991d4ea999a, type: 2}
   objectToSpawn: {fileID: 5903148542053929290, guid: c5673e9ed0ef0ee4f947bea72cad4d2b, type: 3}
   movementSpeed: 5
+  jumpForce: 7
 --- !u!54 &5034160386436029905
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -199,7 +200,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 2

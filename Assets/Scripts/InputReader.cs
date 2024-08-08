@@ -6,11 +6,14 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 [CreateAssetMenu(fileName = "InputReader", menuName = "Game/Input Reader")]
-public class InputReader : ScriptableObject, PlayerInput.IPlayerActions
+public class InputReader : ScriptableObject, PlayerInput.IPlayerActions, PlayerInput.IChatActions
 {
     private PlayerInput playerInput;
     public event UnityAction<Vector2> MoveEvent = delegate { }; 
     public event UnityAction JumpEvent = delegate { }; 
+    public event UnityAction ChatEvent = delegate { }; 
+    public event UnityAction CancelChatEvent = delegate { }; 
+    public event UnityAction SendChatEvent = delegate { }; 
     
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -23,6 +26,24 @@ public class InputReader : ScriptableObject, PlayerInput.IPlayerActions
             JumpEvent.Invoke();
     }
 
+    public void OnChat(InputAction.CallbackContext context)
+    {
+        if(context.performed)
+            ChatEvent.Invoke();
+    }
+
+    public void OnCancelChat(InputAction.CallbackContext context)
+    {
+        if(context.performed)
+            CancelChatEvent.Invoke();
+    }
+
+    public void OnSendChat(InputAction.CallbackContext context)
+    {
+        if(context.performed)
+            SendChatEvent.Invoke();
+    }
+    
     private void OnEnable()
     {
         if (playerInput == null)
@@ -30,6 +51,8 @@ public class InputReader : ScriptableObject, PlayerInput.IPlayerActions
             playerInput = new PlayerInput();
             playerInput.Player.SetCallbacks(this);
             playerInput.Player.Enable();
+            playerInput.Chat.SetCallbacks(this);
+            playerInput.Chat.Enable();
         }
     }
 }

@@ -92,6 +92,74 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Chat",
+            "id": "4c536102-93ad-43b7-b0ba-dd3f52344223",
+            "actions": [
+                {
+                    "name": "Chat",
+                    "type": "Button",
+                    "id": "8c5c4d71-57bf-4e6c-b625-3e8b2f1284c2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CancelChat",
+                    "type": "Button",
+                    "id": "fae9fbc5-078b-457d-9b9d-19d8b04731e7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SendChat",
+                    "type": "Button",
+                    "id": "223274a2-42e5-4f17-8183-bf4705d48301",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "3fd36946-b7b0-4622-94c4-4886df0eb953",
+                    "path": "<Keyboard>/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Chat",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ae89abb3-f028-462b-b47b-67c4679318ac",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CancelChat",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "664ba03e-80a8-4319-992c-6cb5e7fc8b02",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SendChat",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

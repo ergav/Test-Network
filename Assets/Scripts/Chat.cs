@@ -10,6 +10,17 @@ public class Chat : NetworkBehaviour
 {
     [SerializeField] private TextMeshProUGUI text;
 
+    [SerializeField] private InputReader inputReader;
+    [SerializeField] private GameObject chatBox;
+
+    private void Start()
+    {
+        if (inputReader != null)
+        {
+            inputReader.ChatEvent += ChatRPC;
+        }
+    }
+
     public override void OnNetworkSpawn()
     {
         SubmitMessageRPC("Hello there");
@@ -26,5 +37,16 @@ public class Chat : NetworkBehaviour
     {
         text.text = message.ToString();
         Debug.Log(message.ToString());
+    }
+
+    public void ReadStringInput(string s)
+    {
+        SubmitMessageRPC(s);
+    }
+    
+    [Rpc(SendTo.Me)]
+    private void ChatRPC()
+    {
+        chatBox.SetActive(true);
     }
 }

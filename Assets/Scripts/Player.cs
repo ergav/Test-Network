@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -12,13 +13,19 @@ public class Player : NetworkBehaviour
     private NetworkVariable<Vector2> moveInput = new NetworkVariable<Vector2>();
 
     [SerializeField] private float movementSpeed = 5;
+    [SerializeField] private float jumpForce = 5;
+
+    private Rigidbody rb;
+    
     void Start()
     {
         if (inputReader != null && IsLocalPlayer)
         {
             inputReader.MoveEvent += OnMove;
-            inputReader.JumpEvent += SpawnRPC;
+            inputReader.JumpEvent += JumpRPC;
         }
+
+        rb = GetComponent<Rigidbody>();
     }
 
     private void OnMove(Vector2 input)
@@ -28,12 +35,20 @@ public class Player : NetworkBehaviour
     
     void Update()
     {
+        // if (IsServer)
+        // {
+        //     transform.position += new Vector3(moveInput.Value.x * movementSpeed * Time.deltaTime, 0, moveInput.Value.y * movementSpeed * Time.deltaTime);
+        // }
+    }
+
+    private void FixedUpdate()
+    {
         if (IsServer)
         {
-            transform.position += new Vector3(moveInput.Value.x * movementSpeed * Time.deltaTime, 0, moveInput.Value.y * movementSpeed * Time.deltaTime);
+            rb.velocity = new Vector3(moveInput.Value.x * movementSpeed, rb.velocity.y, moveInput.Value.y * movementSpeed);
         }
     }
-    
+
     [Rpc(SendTo.Server)]
     private void SpawnRPC()
     {
@@ -45,5 +60,11 @@ public class Player : NetworkBehaviour
     private void MoveRPC(Vector2 data)
     {
         moveInput.Value = data;
+    }
+
+    [Rpc(SendTo.Server)]
+    private void JumpRPC()
+    {
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 }

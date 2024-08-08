@@ -114,6 +114,74 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Chat"",
+            ""id"": ""4c536102-93ad-43b7-b0ba-dd3f52344223"",
+            ""actions"": [
+                {
+                    ""name"": ""Chat"",
+                    ""type"": ""Button"",
+                    ""id"": ""8c5c4d71-57bf-4e6c-b625-3e8b2f1284c2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CancelChat"",
+                    ""type"": ""Button"",
+                    ""id"": ""fae9fbc5-078b-457d-9b9d-19d8b04731e7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SendChat"",
+                    ""type"": ""Button"",
+                    ""id"": ""223274a2-42e5-4f17-8183-bf4705d48301"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""3fd36946-b7b0-4622-94c4-4886df0eb953"",
+                    ""path"": ""<Keyboard>/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Chat"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ae89abb3-f028-462b-b47b-67c4679318ac"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CancelChat"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""664ba03e-80a8-4319-992c-6cb5e7fc8b02"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SendChat"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -122,6 +190,11 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+        // Chat
+        m_Chat = asset.FindActionMap("Chat", throwIfNotFound: true);
+        m_Chat_Chat = m_Chat.FindAction("Chat", throwIfNotFound: true);
+        m_Chat_CancelChat = m_Chat.FindAction("CancelChat", throwIfNotFound: true);
+        m_Chat_SendChat = m_Chat.FindAction("SendChat", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -233,9 +306,77 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // Chat
+    private readonly InputActionMap m_Chat;
+    private List<IChatActions> m_ChatActionsCallbackInterfaces = new List<IChatActions>();
+    private readonly InputAction m_Chat_Chat;
+    private readonly InputAction m_Chat_CancelChat;
+    private readonly InputAction m_Chat_SendChat;
+    public struct ChatActions
+    {
+        private @PlayerInput m_Wrapper;
+        public ChatActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Chat => m_Wrapper.m_Chat_Chat;
+        public InputAction @CancelChat => m_Wrapper.m_Chat_CancelChat;
+        public InputAction @SendChat => m_Wrapper.m_Chat_SendChat;
+        public InputActionMap Get() { return m_Wrapper.m_Chat; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(ChatActions set) { return set.Get(); }
+        public void AddCallbacks(IChatActions instance)
+        {
+            if (instance == null || m_Wrapper.m_ChatActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_ChatActionsCallbackInterfaces.Add(instance);
+            @Chat.started += instance.OnChat;
+            @Chat.performed += instance.OnChat;
+            @Chat.canceled += instance.OnChat;
+            @CancelChat.started += instance.OnCancelChat;
+            @CancelChat.performed += instance.OnCancelChat;
+            @CancelChat.canceled += instance.OnCancelChat;
+            @SendChat.started += instance.OnSendChat;
+            @SendChat.performed += instance.OnSendChat;
+            @SendChat.canceled += instance.OnSendChat;
+        }
+
+        private void UnregisterCallbacks(IChatActions instance)
+        {
+            @Chat.started -= instance.OnChat;
+            @Chat.performed -= instance.OnChat;
+            @Chat.canceled -= instance.OnChat;
+            @CancelChat.started -= instance.OnCancelChat;
+            @CancelChat.performed -= instance.OnCancelChat;
+            @CancelChat.canceled -= instance.OnCancelChat;
+            @SendChat.started -= instance.OnSendChat;
+            @SendChat.performed -= instance.OnSendChat;
+            @SendChat.canceled -= instance.OnSendChat;
+        }
+
+        public void RemoveCallbacks(IChatActions instance)
+        {
+            if (m_Wrapper.m_ChatActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IChatActions instance)
+        {
+            foreach (var item in m_Wrapper.m_ChatActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_ChatActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public ChatActions @Chat => new ChatActions(this);
     public interface IPlayerActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+    }
+    public interface IChatActions
+    {
+        void OnChat(InputAction.CallbackContext context);
+        void OnCancelChat(InputAction.CallbackContext context);
+        void OnSendChat(InputAction.CallbackContext context);
     }
 }
