@@ -3,20 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class NetworkManagerUI : MonoBehaviour
 {
-    [SerializeField] private NetworkManager _networkManager;
+    [FormerlySerializedAs("_networkManager")] [SerializeField] private NetworkManager networkManager;
     
     private void OnGUI()
     {
         if (GUILayout.Button("Host"))
         {
-            _networkManager.StartHost();
+            networkManager.StartHost();
         }
         if (GUILayout.Button("Join"))
         {
-            _networkManager.StartClient();
+            networkManager.StartClient();
         }        
         if (GUILayout.Button("Quit"))
         {

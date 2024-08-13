@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7cf0684248fdbe9478ac3937c27b9764, type: 2}
+  - {fileID: 2100000, guid: 97cf2f689cf40a346b9db061697704d3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 69192959
+  GlobalObjectIdHash: 3839366670
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -154,6 +154,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputReader: {fileID: 11400000, guid: 48a58c4f586e03247ac81991d4ea999a, type: 2}
   objectToSpawn: {fileID: 5903148542053929290, guid: c5673e9ed0ef0ee4f947bea72cad4d2b, type: 3}
+  team1Material: {fileID: 2100000, guid: 97cf2f689cf40a346b9db061697704d3, type: 2}
+  team2Material: {fileID: 2100000, guid: 7cf0684248fdbe9478ac3937c27b9764, type: 2}
   movementSpeed: 5
   jumpForce: 7
 --- !u!54 &5034160386436029905

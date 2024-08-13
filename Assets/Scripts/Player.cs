@@ -10,12 +10,18 @@ public class Player : NetworkBehaviour
     
     [SerializeField] private GameObject objectToSpawn;
     
+    [SerializeField] private Material team1Material, team2Material;
+    
     private NetworkVariable<Vector2> moveInput = new NetworkVariable<Vector2>();
 
     [SerializeField] private float movementSpeed = 5;
     [SerializeField] private float jumpForce = 5;
 
     private Rigidbody rb;
+
+    private PlayerManager playerManager;
+
+    private NetworkVariable<byte> teamIndex = new NetworkVariable<byte>();
     
     void Start()
     {
@@ -28,17 +34,53 @@ public class Player : NetworkBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
+    [Rpc(SendTo.Everyone)]
+    public void SetTeamRPC(byte newTeamIndex)
+    {
+        if (newTeamIndex > 1)
+        {
+            return;
+        }
+    
+        teamIndex.Value = newTeamIndex;
+        
+        if (newTeamIndex == 0)
+        {
+            GetComponent<Renderer>().material = team1Material;
+        }
+        else
+        {
+            GetComponent<Renderer>().material = team2Material;
+        }
+    }
+    
+    public override void OnNetworkSpawn()
+    {
+        playerManager = FindObjectOfType<PlayerManager>();
+        
+        AddToListRPC();
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        RemoveFromListRPC();
+    }
+
+    [Rpc(SendTo.Server)]
+    private void AddToListRPC()
+    {
+        playerManager.AddPlayer(this);
+    }
+    
+    [Rpc(SendTo.Server)]
+    private void RemoveFromListRPC()
+    {
+        playerManager.RemovePlayer(this);
+    }
+
     private void OnMove(Vector2 input)
     {
         MoveRPC(input);
-    }
-    
-    void Update()
-    {
-        // if (IsServer)
-        // {
-        //     transform.position += new Vector3(moveInput.Value.x * movementSpeed * Time.deltaTime, 0, moveInput.Value.y * movementSpeed * Time.deltaTime);
-        // }
     }
 
     private void FixedUpdate()
