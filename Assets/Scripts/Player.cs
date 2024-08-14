@@ -8,8 +8,6 @@ public class Player : NetworkBehaviour
 {
     [SerializeField] private InputReader inputReader;
     
-    [SerializeField] private GameObject objectToSpawn;
-    
     [SerializeField] private Material team1Material, team2Material;
     
     private NetworkVariable<Vector2> moveInput = new NetworkVariable<Vector2>();

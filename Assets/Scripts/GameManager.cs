@@ -6,7 +6,6 @@ using Unity.Netcode;
 
 public class GameManager : NetworkBehaviour
 {
-    [SerializeField] private NetworkManager networkManager;
     [SerializeField] private Transform player1Spawn, player2Spawn;
     [SerializeField] private List<Player> players = new List<Player>();
 
