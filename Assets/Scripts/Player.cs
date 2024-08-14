@@ -19,7 +19,11 @@ public class Player : NetworkBehaviour
 
     private Rigidbody rb;
 
-    private PlayerManager playerManager;
+    private GameManager gameManager;
+
+    private bool isGrounded;
+
+    private float distToGround;
 
     private NetworkVariable<byte> teamIndex = new NetworkVariable<byte>();
     
@@ -31,6 +35,8 @@ public class Player : NetworkBehaviour
             inputReader.JumpEvent += JumpRPC;
         }
 
+        distToGround = GetComponent<Collider>().bounds.extents.y;
+        
         rb = GetComponent<Rigidbody>();
     }
 
@@ -56,7 +62,7 @@ public class Player : NetworkBehaviour
     
     public override void OnNetworkSpawn()
     {
-        playerManager = FindObjectOfType<PlayerManager>();
+        gameManager = FindObjectOfType<GameManager>();
         
         AddToListRPC();
     }
@@ -69,18 +75,30 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void AddToListRPC()
     {
-        playerManager.AddPlayer(this);
+        gameManager.AddPlayer(this);
     }
     
     [Rpc(SendTo.Server)]
     private void RemoveFromListRPC()
     {
-        playerManager.RemovePlayer(this);
+        gameManager.RemovePlayer(this);
     }
 
     private void OnMove(Vector2 input)
     {
         MoveRPC(input);
+    }
+
+    private void Update()
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, distToGround + 0.1f))
+        {
+            isGrounded = true;
+        }
+        else
+        {
+            isGrounded = false;
+        }
     }
 
     private void FixedUpdate()
@@ -107,6 +125,9 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void JumpRPC()
     {
-        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        if (isGrounded)
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
     }
 }

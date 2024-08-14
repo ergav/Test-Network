@@ -5,8 +5,8 @@ using UnityEngine.Serialization;
 
 public class CameraMovement : MonoBehaviour
 {
-    [FormerlySerializedAs("player")] public Transform objectToFollow;
-    public float smoothSpeed;
+    public Transform objectToFollow;
+    [SerializeField] private float smoothSpeed;
 
     private void LateUpdate()
     {
