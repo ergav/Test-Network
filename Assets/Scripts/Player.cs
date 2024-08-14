@@ -108,13 +108,6 @@ public class Player : NetworkBehaviour
             rb.velocity = new Vector3(moveInput.Value.x * movementSpeed, rb.velocity.y, moveInput.Value.y * movementSpeed);
         }
     }
-
-    [Rpc(SendTo.Server)]
-    private void SpawnRPC()
-    {
-        NetworkObject ob = Instantiate(objectToSpawn).GetComponent<NetworkObject>();
-        ob.Spawn();
-    }
     
     [Rpc(SendTo.Server)]
     private void MoveRPC(Vector2 data)
